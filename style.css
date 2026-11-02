@@ -1,0 +1,528 @@
+/* ===== CHATURANGA - Ancient Indian Chess ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cinzel+Decorative:wght@400;700&display=swap');
+
+:root {
+  --gold: #D4AF37;
+  --dark-gold: #B8860B;
+  --deep-red: #8B0000;
+  --saffron: #FF9933;
+  --ivory: #FFFFF0;
+  --dark-bg: #0D0A05;
+  --panel-bg: rgba(10, 7, 2, 0.88);
+  --border-gold: 1px solid rgba(212, 175, 55, 0.5);
+  --text-glow: 0 0 10px rgba(212, 175, 55, 0.8);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #000;
+  font-family: 'Cinzel', serif;
+  overflow: hidden;
+  width: 100vw; height: 100vh;
+}
+
+/* ===== LOADING SCREEN ===== */
+#loading-screen {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center, #1a0a00 0%, #0a0500 50%, #000 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  animation: loadFadeIn 1s ease;
+}
+
+.loading-content {
+  text-align: center;
+  color: var(--gold);
+}
+
+.om-symbol {
+  font-size: 80px;
+  animation: omPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px #FF9933);
+}
+
+@keyframes omPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.loading-content h1 {
+  font-size: 3rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-shadow: var(--text-glow), 0 0 30px var(--saffron);
+  margin: 10px 0;
+}
+
+.loading-content h2 {
+  font-size: 1.8rem;
+  letter-spacing: 0.5em;
+  color: var(--saffron);
+  font-family: 'Cinzel Decorative', serif;
+  margin-bottom: 8px;
+}
+
+.loading-content p {
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  color: rgba(212, 175, 55, 0.7);
+  margin-bottom: 40px;
+}
+
+.loading-bar-container {
+  width: 300px;
+  height: 4px;
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 2px;
+  margin: 0 auto 15px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.loading-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--dark-gold), var(--saffron), var(--gold));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.loading-text {
+  font-size: 0.75rem;
+  color: rgba(212, 175, 55, 0.6);
+  letter-spacing: 0.2em;
+  height: 20px;
+}
+
+@keyframes loadFadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+/* ===== GAME CONTAINER ===== */
+#game-container {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+}
+
+#chaturanga-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+}
+
+/* ===== UI OVERLAY ===== */
+#ui-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ===== HEADER ===== */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+  border-bottom: var(--border-gold);
+  pointer-events: auto;
+}
+
+.header-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-avatar {
+  width: 50px; height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: radial-gradient(circle, rgba(212,175,55,0.2), rgba(0,0,0,0.8));
+  box-shadow: 0 0 15px rgba(212,175,55,0.4);
+}
+
+.player-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-shadow: var(--text-glow);
+}
+
+.player-title {
+  font-size: 0.65rem;
+  color: rgba(212,175,55,0.6);
+  letter-spacing: 0.2em;
+}
+
+.game-title-header {
+  text-align: center;
+}
+
+.game-title-header .sanskrit {
+  display: block;
+  font-size: 1.4rem;
+  color: var(--gold);
+  text-shadow: var(--text-glow);
+  letter-spacing: 0.2em;
+}
+
+.game-title-header .subtitle {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--saffron);
+  letter-spacing: 0.5em;
+  font-family: 'Cinzel Decorative', serif;
+}
+
+/* ===== TURN BANNER ===== */
+#turn-banner {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: var(--panel-bg);
+  border: var(--border-gold);
+  border-radius: 4px;
+  padding: 8px 24px;
+  min-width: 240px;
+}
+
+#turn-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-shadow: var(--text-glow);
+}
+
+#turn-subtitle {
+  font-size: 0.6rem;
+  color: rgba(212,175,55,0.6);
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+}
+
+/* ===== CAMERA CONTROLS ===== */
+#camera-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.cam-btn {
+  background: var(--panel-bg);
+  border: var(--border-gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.cam-btn:hover {
+  background: rgba(212,175,55,0.15);
+  box-shadow: 0 0 10px rgba(212,175,55,0.4);
+}
+
+.cam-btn.active {
+  background: rgba(212,175,55,0.2);
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(212,175,55,0.5);
+}
+
+/* ===== MOVE LOG ===== */
+#move-log-panel {
+  position: absolute;
+  right: 15px;
+  top: 90px;
+  width: 180px;
+  max-height: 280px;
+  background: var(--panel-bg);
+  border: var(--border-gold);
+  border-radius: 4px;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.panel-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  padding: 8px 12px;
+  background: rgba(212,175,55,0.1);
+  border-bottom: var(--border-gold);
+  text-align: center;
+}
+
+#move-log {
+  padding: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  font-size: 0.6rem;
+  color: rgba(212,175,55,0.8);
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+}
+
+#move-log::-webkit-scrollbar { width: 4px; }
+#move-log::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+#move-log::-webkit-scrollbar-thumb { background: var(--dark-gold); border-radius: 2px; }
+
+.log-entry { padding: 2px 4px; border-bottom: 1px solid rgba(212,175,55,0.1); }
+.log-capture { color: var(--saffron); }
+.log-check { color: #ff4444; }
+
+/* ===== CAPTURED PANEL ===== */
+#captured-panel {
+  position: absolute;
+  left: 15px;
+  top: 90px;
+  width: 160px;
+  background: var(--panel-bg);
+  border: var(--border-gold);
+  border-radius: 4px;
+  pointer-events: auto;
+}
+
+.captured-row {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(212,175,55,0.1);
+  font-size: 0.6rem;
+  color: rgba(212,175,55,0.7);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cap-label {
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  min-width: 40px;
+}
+
+/* ===== CHECK INDICATOR ===== */
+#check-indicator {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(139,0,0,0.9);
+  border: 1px solid #ff0000;
+  color: #ff4444;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  padding: 8px 20px;
+  border-radius: 2px;
+  animation: checkPulse 0.5s ease infinite alternate;
+  box-shadow: 0 0 20px rgba(255,0,0,0.5);
+}
+
+@keyframes checkPulse {
+  from { box-shadow: 0 0 10px rgba(255,0,0,0.5); }
+  to { box-shadow: 0 0 30px rgba(255,0,0,0.9); }
+}
+
+/* ===== GAME OVER ===== */
+#game-over {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(20,10,0,0.95) 0%, rgba(0,0,0,0.98) 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.game-over-content {
+  text-align: center;
+  animation: victoryAppear 1s ease;
+}
+
+@keyframes victoryAppear {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.victory-symbol { font-size: 80px; margin-bottom: 20px; animation: victorySpin 2s linear infinite; }
+@keyframes victorySpin { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
+
+.game-over-content h2 {
+  font-size: 3rem;
+  color: var(--gold);
+  text-shadow: 0 0 30px var(--saffron), var(--text-glow);
+  letter-spacing: 0.4em;
+  font-family: 'Cinzel Decorative', serif;
+  margin-bottom: 10px;
+}
+
+.game-over-content p {
+  color: var(--saffron);
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 30px;
+}
+
+#new-game-btn {
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  padding: 14px 40px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#new-game-btn:hover {
+  background: rgba(212,175,55,0.2);
+  box-shadow: 0 0 30px rgba(212,175,55,0.5);
+}
+
+/* ===== PROMOTION DIALOG ===== */
+#promotion-dialog {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.promotion-content {
+  background: var(--panel-bg);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 30px 40px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(212,175,55,0.4);
+}
+
+.promotion-content h3 {
+  color: var(--gold);
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+
+.promotion-content p {
+  color: rgba(212,175,55,0.7);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.promotion-options {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.promo-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.promo-btn:hover {
+  background: rgba(212,175,55,0.2);
+  box-shadow: 0 0 15px rgba(212,175,55,0.4);
+}
+
+/* ===== BATTLE OVERLAY ===== */
+#battle-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+#battle-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+}
+
+#battle-title {
+  position: relative; z-index: 10;
+  margin-top: 40px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2rem;
+  color: var(--gold);
+  text-shadow: 0 0 30px var(--saffron), 0 0 60px var(--gold);
+  letter-spacing: 0.4em;
+  text-align: center;
+  animation: battleTitlePulse 1.5s ease infinite alternate;
+}
+
+@keyframes battleTitlePulse {
+  from { text-shadow: 0 0 20px var(--saffron); }
+  to { text-shadow: 0 0 50px var(--saffron), 0 0 80px var(--gold); }
+}
+
+#battle-subtitle {
+  position: relative; z-index: 10;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--saffron);
+  letter-spacing: 0.3em;
+}
+
+#battle-result {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.8rem;
+  color: var(--gold);
+  text-shadow: 0 0 30px var(--saffron);
+  letter-spacing: 0.3em;
+  opacity: 0;
+  text-align: center;
+}
+
+#battle-skip {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  font-size: 0.7rem;
+  color: rgba(212,175,55,0.5);
+  letter-spacing: 0.2em;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+::-webkit-scrollbar-thumb { background: var(--dark-gold); border-radius: 3px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  #move-log-panel, #captured-panel { display: none; }
+  .game-title-header .sanskrit { font-size: 1rem; }
+  #turn-banner { min-width: 180px; }
+}
